@@ -131,6 +131,7 @@ class Client extends EventEmitter
         @emit 'close', code, message
         # If autoReconnect is enabled and the client is not already reconnecting due to pong timeout
         # Then handle the normal WS termination/close by reconnecting
+        @logger.debug "@autoReconnect: #{@autoReconnect}, @reconnecting: #{@reconnecting}"
         if @autoReconnect && !@reconnecting
           @reconnect()
         @connected = false
