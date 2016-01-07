@@ -571,7 +571,11 @@ class Client extends EventEmitter
       res.on 'end', =>
         if callback?
           if res.statusCode is 200
-            value = JSON.parse(buffer)
+            try
+              value = JSON.parse(buffer)
+            catch error
+              callback({'ok': false, 'error': "Cannot parse API response: #{error}"})
+              return
             callback(value)
           else
             callback({'ok': false, 'error': 'API response: '+res.statusCode})
