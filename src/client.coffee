@@ -109,7 +109,6 @@ class Client extends EventEmitter
         @_pongTimeout = setInterval =>
           if not @connected then return
 
-          @logger.debug 'ping'
           @_send {"type": "ping"}
           if @_lastPong? and Date.now() - @_lastPong > 10000
             @logger.error "Last pong is too old: %d", (Date.now() - @_lastPong) / 1000
@@ -128,10 +127,10 @@ class Client extends EventEmitter
         @emit 'error', error
 
       @ws.on 'close', (code, message) =>
+        @logger.debug "@autoReconnect: #{@autoReconnect}, @reconnecting: #{@reconnecting}"
         @emit 'close', code, message
         # If autoReconnect is enabled and the client is not already reconnecting due to pong timeout
         # Then handle the normal WS termination/close by reconnecting
-        @logger.debug "@autoReconnect: #{@autoReconnect}, @reconnecting: #{@reconnecting}"
         if @autoReconnect && !@reconnecting
           @reconnect()
         @connected = false
@@ -510,7 +509,6 @@ class Client extends EventEmitter
       else
         if message.reply_to
           if message.type == 'pong'
-            @logger.debug 'pong'
             @_lastPong = Date.now()
             delete @_pending[message.reply_to]
           else if message.ok
