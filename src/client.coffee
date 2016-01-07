@@ -110,7 +110,7 @@ class Client extends EventEmitter
           if not @connected then return
 
           @_send {"type": "ping"}
-          if @_lastPong? and Date.now() - @_lastPong > 10000
+          if @_lastPong? and Date.now() - @_lastPong > 60000
             @logger.error "Last pong is too old: %d", (Date.now() - @_lastPong) / 1000
             @authenticated = false
             @connected = false
